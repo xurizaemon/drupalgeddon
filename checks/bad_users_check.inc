@@ -7,6 +7,7 @@
 function bad_users_check() {
   $bad_users = array(
     'configure',
+    'drplsys',
     'drupaldev',
     'n0n0x',
     'system',
