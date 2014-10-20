@@ -13,3 +13,10 @@ one check per file, match the filename and function name. You'll see.
 
 (This probably grew out of some idle thinking about adding our own
 custom checks to Archimedes / Aegir setup.)
+
+Usage
+-----
+
+* Install this to ~/.drush or other Drush include
+* Have some aliases for all your sites
+* `drush -y @sites drupalgeddon-test`
