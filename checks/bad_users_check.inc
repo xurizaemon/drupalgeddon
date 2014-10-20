@@ -7,8 +7,9 @@
 function bad_users_check() {
   $bad_users = array(
     'configure',
-    'system',
+    'drupaldev',
     'n0n0x',
+    'system',
   );
   foreach ($bad_users as $bad_user) {
     if ($result = db_query('SELECT n.uid FROM {users} n WHERE n.name = :name', array(':name' => $bad_user))) {
