@@ -5,8 +5,7 @@
  * Check for bad roles!
  */
 function bad_roles_check() {
-  drush_log('Check');
-  $bad_roles = array('administrator');
+  $bad_roles = array('megauser');
   foreach ($bad_roles as $bad_role) {
     if ($result = db_query('SELECT name FROM {role} r WHERE r.name = :name', array(':name' => $bad_role))) {
       if ($role = $result->fetchObject()) {

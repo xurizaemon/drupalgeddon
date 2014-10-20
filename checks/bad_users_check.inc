@@ -9,7 +9,6 @@ function bad_users_check() {
     'configure',
     'system',
     'n0n0x',
-    'chris.burgess',
   );
   foreach ($bad_users as $bad_user) {
     if ($result = db_query('SELECT n.uid FROM {users} n WHERE n.name = :name', array(':name' => $bad_user))) {
