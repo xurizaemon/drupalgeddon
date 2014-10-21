@@ -7,6 +7,21 @@
  * WTF people. Why can your webserver even write to your codebase?
  */
 function suspicious_files_check() {
+  $result = suspicious_files_check_query();
+  $res = array();
+  if (!empty($result)) {
+    foreach ($result as $file) {
+      $res[] = t('Suspicious file "@file" discovered.', array(
+        '@file' => $file,
+      ));
+    }
+  }
+  if (!empty($res)) {
+    return $res;
+  }
+}
+
+function suspicious_files_check_query() {
   $found_files = file_scan_directory('.', '#.*\.php#', array('callback' => '_suspicious_files_callback_sites'));
   // glob(DRUPAL_ROOT . '/*/*/*.php');
   foreach ($found_files as $found_file) {
@@ -21,7 +36,7 @@ function suspicious_files_check() {
       // Don't report on files in sites/* tree ... will trigger too
       // many false positives.
       if (stristr($file, '/sites/') === FALSE) {
-        $return[] = t('Unrecognised PHP file @file discovered.', array('@file' => $file));
+        $return[] = $file;
       }
     }
   }

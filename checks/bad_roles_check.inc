@@ -5,15 +5,26 @@
  * Check for bad roles!
  */
 function bad_roles_check() {
-  $bad_roles = array('megauser');
-  foreach ($bad_roles as $bad_role) {
-    if ($result = db_query('SELECT name FROM {role} r WHERE r.name = :name', array(':name' => $bad_role))) {
-      if ($role = $result->fetchObject()) {
-        $res[] = t('Role "@name" discovered.', array('@name' => $bad_role));
-      }
+  $res = array();
+  if (!empty($result)) {
+    foreach ($result as $name) {
+      $res[] = t('Role "@name" discovered.', array(
+        '@name' => $name,
+      ));
     }
   }
   if (!empty($res)) {
     return $res;
   }
+}
+
+function bad_roles_check_query() {
+  $roles = array('megauser');
+  $result = db_query('SELECT rid, name FROM {role} WHERE name IN (:roles)', array(
+    ':roles' => $roles,
+  ));
+  while ($role = $result->fetchObject()) {
+    $ret_val[$role->rid] = $role->name;
+  }
+  return $ret_val;
 }

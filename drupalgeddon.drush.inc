@@ -1,10 +1,11 @@
 <?php
-
 /**
  * @file
  * Provide Drush command to check for Drupalgeddon exploits seen in
  * the wild.
  */
+
+define('DRUPALGEDDON_BASE_PATH', __DIR__);
 
 /**
  * Implements hook_drush_help().
@@ -69,5 +70,25 @@ function drush_drupalgeddon() {
   }
   else {
     drush_log('Site did not test positive. Good luck!', 'ok');
+  }
+}
+
+/**
+ * Implements hook_drush_command_alter().
+ */
+function drupalgeddon_drush_command_alter(&$command) {
+  // Add Drupalgeddon checks to existing security report.
+  if ($command['command'] == 'audit_security') {
+    $security_review_checks = array(
+      'DrupalgeddonUsers',
+      'DrupalgeddonRoles',
+      'DrupalgeddonSuspiciousFiles',
+    );
+    foreach ($security_review_checks as $name) {
+      $command['checks'][] = array(
+        'name' => $name,
+        'location' => __DIR__ . '/drupalgeddon.site_audit.inc',
+      );
+    }
   }
 }
