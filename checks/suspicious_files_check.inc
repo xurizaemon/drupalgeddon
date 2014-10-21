@@ -4,19 +4,24 @@
  * A check for bad files.
  * https://www.drupal.org/node/2360269
  *
- * WTF people. Why can your website even write to your codebase?
+ * WTF people. Why can your webserver even write to your codebase?
  */
 function suspicious_files_check() {
-  $php_files = glob(DRUPAL_ROOT . '/*/*/*.php');
+  $found_files = file_scan_directory('.', '#.*\.php#', array('callback' => '_suspicious_files_callback_sites'));
+  // glob(DRUPAL_ROOT . '/*/*/*.php');
+  foreach ($found_files as $found_file) {
+    if (!preg_match('#/sites/#', $found_file->uri)) {
+      $files[] = realpath(DRUPAL_ROOT . DIRECTORY_SEPARATOR . $found_file->uri);
+    }
+  }
 
   $known_files = _suspicious_files_whitelist();
-  foreach ($php_files as $php_file) {
-    $file = basename($php_file);
-    if (!in_array($php_file, $known_files)) {
+  foreach ($files as $file) {
+    if (!in_array($file, $known_files)) {
       // Don't report on files in sites/* tree ... will trigger too
       // many false positives.
-      if (stristr($php_file, '/sites/') === FALSE) {
-        $return[] = t('Unrecognised PHP file @file discovered.', array('@file' => $php_file));
+      if (stristr($file, '/sites/') === FALSE) {
+        $return[] = t('Unrecognised PHP file @file discovered.', array('@file' => $file));
       }
     }
   }
@@ -37,5 +42,14 @@ function _suspicious_files_whitelist() {
       }
       return $paths;
     }
+  }
+}
+
+/**
+ * Callback to exclude sites/*.
+ */
+function _suspicious_files_callback_sites($file) {
+  if (!preg_match('#./sites#', $file)) {
+    return $file;
   }
 }
