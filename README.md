@@ -30,7 +30,27 @@ or [Github](https://github.com/xurizaemon/drupalgeddon).
 Installation
 ------------
 
-    drush dl drupalgeddon
+Change directory to either your unified or personal Drush folder in the
+commands subdirectory, like
+
+````
+~/.drush/commands
+````
+
+Download Drupalgeddon.
+
+````
+drush dl drupalgeddon
+````
+
+then clear Drush's cache:
+
+````
+drush cc drush
+````
+
+See https://github.com/drush-ops/drush#commands to learn more about installing
+commands into Drush.
 
 Usage
 -----
@@ -51,3 +71,25 @@ Then you can test all the sites on your server at once.
     sites.abcde.example.org         >> Site did not test positive. Good luck!    [ok]
     sites.abcdef.example.org        >> Site did not test positive. Good luck!    [ok]
     sites.abcdefg.example.org       >> Site did not test positive. Good luck!    [ok]
+
+Site Audit Integration
+----------------------
+Drupalgeddon checks have been integrated with the Security Report in
+[Site Audit](https://www.drupal.org/project/site_audit); just install
+Site Audit in the same location as Drupalgeddon and clear the drush cache.
+
+````
+drush cc drush
+````
+
+Then, run the Security Report:
+
+````
+drush audit_security
+````
+
+To include passed checks within the security report, use ````--detail````:
+
+````
+drush audit_security --detail
+````
