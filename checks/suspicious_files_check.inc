@@ -25,7 +25,7 @@ function suspicious_files_check_query() {
   $found_files = file_scan_directory('.', '#.*\.php#', array('callback' => '_suspicious_files_callback_sites'));
   // glob(DRUPAL_ROOT . '/*/*/*.php');
   foreach ($found_files as $found_file) {
-    if (!preg_match('#/sites/#', $found_file->uri)) {
+    if (!preg_match('#/(sites|profiles)/#', $found_file->uri)) {
       $files[] = realpath(DRUPAL_ROOT . DIRECTORY_SEPARATOR . $found_file->uri);
     }
   }
