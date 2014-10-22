@@ -32,7 +32,7 @@ function suspicious_files_check_query() {
 
   $known_files = _suspicious_files_whitelist();
   foreach ($files as $file) {
-    if (!in_array($file, $known_files)) {
+    if (is_array($known_files) && !in_array($file, $known_files)) {
       // Don't report on files in sites/* tree ... will trigger too
       // many false positives.
       if (stristr($file, '/sites/') === FALSE) {
