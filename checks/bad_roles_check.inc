@@ -6,6 +6,7 @@
  */
 function bad_roles_check() {
   $res = array();
+  $result = bad_roles_check_query();
   if (!empty($result)) {
     foreach ($result as $name) {
       $res[] = t('Role "@name" discovered.', array(
@@ -19,7 +20,9 @@ function bad_roles_check() {
 }
 
 function bad_roles_check_query() {
-  $roles = array('megauser');
+  $roles = array(
+    'megauser',
+  );
   $result = db_query('SELECT rid, name FROM {role} WHERE name IN (:roles)', array(
     ':roles' => $roles,
   ));
