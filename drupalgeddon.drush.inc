@@ -69,7 +69,7 @@ function drush_drupalgeddon() {
     }
   }
   else {
-    drush_log('Site did not test positive. Good luck!', 'ok');
+    drush_log('No evidence of known Drupalgeddon exploits found.', 'ok');
   }
 }
 
