@@ -21,11 +21,26 @@ function bad_users_check() {
 
 function bad_users_check_query() {
   $users = array(
+    '67890',
+    'admin2',
+    'adminl',
+    'adminstr',
+    'assass',
     'configure',
     'drplsys',
+    'Drupal_Reserve',
     'drupaldev',
+    'jhuang',
+    'malamut',
     'n0n0x',
+    'ololo1',
+    'owned',
+    'phantom',
+    'service',
+    'service@drupal.org',
     'system',
+    'test1',
+    'tst123',
   );
   $result = db_query('SELECT uid, name FROM {users} WHERE name IN (:users)', array(
     ':users' => $users,
