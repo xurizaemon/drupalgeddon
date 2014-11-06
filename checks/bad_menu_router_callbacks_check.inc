@@ -177,7 +177,7 @@ function bad_menu_router_callbacks_check() {
     'get_meta_tags',
   );
   foreach ($bad_callbacks as $bad_callback) {
-    if ($result = db_query('SELECT mr.path FROM {menu_router} mr WHERE mr.access_callback = :cb', array(':cb' => $bad_callback))) {
+    if ($result = db_query('SELECT mr.path FROM {menu_router} mr WHERE mr.access_callback = :cb OR mr.delivery_callback = :cb OR mr.page_callback = :cb OR mr.theme_callback = :cb', array(':cb' => $bad_callback))) {
       if ($user = $result->fetchObject()) {
         $res[] = t('Menu router @name discovered.', array('@name' => $bad_callback));
       }
