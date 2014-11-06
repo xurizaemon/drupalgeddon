@@ -50,11 +50,28 @@ function suspicious_files_check_query() {
  */
 function _suspicious_files_whitelist() {
   $tree_list_url = 'https://github.com/drupal/drupal/tree-list/4786cb98b9db1b0727a441c4aa7b6d47670f1afe';
+
+  $extra_whitelist = array(
+    // filename => array of valid sha1 hashes.
+    'modules/help/help.api.php' => array( // A file removed with Drupal 7.29
+      '6fab6bbb415ff429cfd5575820907a3fbb7d01ad', // 7.12
+      '187eff591132ab334159402a273d7d174823b197', // 7.2
+      'a73b016eff898e85ecd67663f2e735d9580e4cf8', // 7.0
+    ),
+  );
   if ($response = drupal_http_request($tree_list_url)) {
     if ($json = json_decode($response->data)) {
       foreach ($json->paths as $path) {
         $paths[] = realpath(DRUPAL_ROOT . '/' . $path);
       }
+
+      foreach ($extra_whitelist as $path => $sha1sums) {
+        $full_path = realpath(DRUPAL_ROOT . '/' . $path);
+        if (in_array(sha1_file($full_path), $sha1sums)) {
+          $paths[] = $full_path;
+        }
+      }
+
       return $paths;
     }
   }
