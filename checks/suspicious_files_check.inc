@@ -68,7 +68,19 @@ function suspicious_files_check_query() {
 function _suspicious_files_whitelist() {
   // Use correct hash for latest core (note: tree hash, not commit hash) from:
   // http://cgit.drupalcode.org/drupal/commit/?id=4ba5f184c69306da0e30260890f01ea0694af274
-  $tree_list_url = 'https://github.com/drupal/drupal/tree-list/a27ea4ac2112bc9c70e5cf989b87b545ef501813';
+  $tree_list_hash = array(
+    '7.32' => '4786cb98b9db1b0727a441c4aa7b6d47670f1afe',
+    '7.33' => 'a27ea4ac2112bc9c70e5cf989b87b545ef501813',
+  );
+  $tree_list_url = 'https://github.com/drupal/drupal/tree-list/';
+
+  // If we know the hash of this version, look up that.
+  // Otherwise, use the latest known version
+  if (isset($tree_list_hash[VERSION]) === TRUE) {
+    $tree_list_url .= $tree_list_hash[VERSION];
+  } else {
+    $tree_list_url .= array_pop($tree_list_hash);
+  }
 
   // Filename => array of valid sha1 hashes.
   $extra_whitelist = array(
