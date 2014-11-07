@@ -33,9 +33,19 @@ function suspicious_files_check_query() {
   $known_files = _suspicious_files_whitelist();
   foreach ($files as $file) {
     if (is_array($known_files) && !in_array($file, $known_files)) {
-      // Don't report on files in sites/* tree ... will trigger too
-      // many false positives.
-      if (stristr($file, '/sites/') === FALSE) {
+      // Exceptions to avoid too many false positives.
+      if (stristr($file, '/sites/') === FALSE &&                    // Too many false positives.
+          stristr($file, '/data/all/') === FALSE &&                 // Valid BOA path.
+          stristr($file, '/data/disk/all/') === FALSE &&            // Valid BOA path.
+          stristr($file, '/drushrc.php') === FALSE &&               // Valid Drush file.
+          stristr($file, '/js.php') === FALSE &&                    // Valid BOA file/symlink.
+          stristr($file, '/local.settings.php') === FALSE &&        // Valid Aegir file.
+          stristr($file, '/modules/o_contrib_seven/') === FALSE &&  // Valid BOA path.
+          stristr($file, '/rtoc.php') === FALSE &&                  // Valid BOA file.
+          stristr($file, '/solr.php') === FALSE &&                  // Valid BOA file.
+          stristr($file, '/themes/rubik/') === FALSE &&             // Valid BOA path.
+          stristr($file, '/themes/tao/') === FALSE &&               // Valid BOA path.
+          stristr($file, '/FirePHPCore/') === FALSE) {              // Whitelist FirePHPCore.
         $return[] = $file;
       }
     }
