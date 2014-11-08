@@ -1,8 +1,12 @@
 <?php
+/**
+ * @file
+ * Check for users with known malicious names.
+ */
 
 /**
  * A check for bad users.
- * https://gist.github.com/joshkoenig/dbb543c02198330cbf87
+ * @link https://gist.github.com/joshkoenig/dbb543c02198330cbf87
  */
 function bad_users_check() {
   $result = bad_users_check_query();
@@ -19,6 +23,12 @@ function bad_users_check() {
   }
 }
 
+/**
+ * Gather data for bad users check.
+ *
+ * @return array
+ *   User names keyed by user ids.
+ */
 function bad_users_check_query() {
   $users = array(
     '67890',

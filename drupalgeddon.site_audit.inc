@@ -157,13 +157,24 @@ class SiteAuditCheckSecurityDrupalgeddonSuspiciousFiles extends SiteAuditCheckAb
    * Implements \SiteAudit\Check\Abstract\getResultFail().
    */
   public function getResultFail() {
-    $suspicious_files_list = array();
-    foreach ($this->registry['drupalgeddon_suspicious_files'] as $uid => $name) {
-      $suspicious_files_list[] = '#' . $uid . ': ' . $name;
+    $ret_val = dt('The following suspicious files have been detected:');
+    if (drush_get_option('html')) {
+      $ret_val = '<p>' . $ret_val . '</p>';
+      $ret_val .= '<ol>';
+      foreach ($this->registry['drupalgeddon_suspicious_files'] as $name) {
+        $ret_val .= '<li>' . check_plain($name) . '</li>';
+      }
+      $ret_val .= '</ol>';
     }
-    return dt('The following files have been detected: @drupalgeddon_suspicious_files', array(
-      '@drupalgeddon_suspicious_files' => implode(', ', $suspicious_files_list),
-    ));
+    else {
+      foreach ($this->registry['drupalgeddon_suspicious_files'] as $name) {
+        if (!drush_get_option('json')) {
+          $ret_val .= PHP_EOL . str_repeat(' ', 6);
+        }
+        $ret_val .= '- ' . check_plain($name);
+      }
+    }
+    return $ret_val;
   }
 
   /**
@@ -188,7 +199,7 @@ class SiteAuditCheckSecurityDrupalgeddonSuspiciousFiles extends SiteAuditCheckAb
    */
   public function getAction() {
     if ($this->score == SiteAuditCheckAbstract::AUDIT_CHECK_SCORE_FAIL) {
-      return dt('Delete the offending files from your site and check for other malicious activity.');
+      return dt('Restore your codebase from a backup if possible. If not, delete the offending files from your site and check for other malicious activity.');
     }
   }
 

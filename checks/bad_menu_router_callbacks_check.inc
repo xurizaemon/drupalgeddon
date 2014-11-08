@@ -1,8 +1,12 @@
 <?php
+/**
+ * @file
+ * Check for malicious menu_router callbacks.
+ */
 
 /**
- * https://gist.github.com/joshkoenig/70ebb6af239dd95f3ce6
- * Check for menu_router attacks with malicious callbacks
+ * Check for menu_router attacks with malicious callbacks.
+ * @link https://gist.github.com/joshkoenig/70ebb6af239dd95f3ce6
  */
 function bad_menu_router_callbacks_check() {
   $bad_callbacks = array(

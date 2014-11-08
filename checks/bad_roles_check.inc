@@ -1,8 +1,12 @@
 <?php
+/**
+ * @file
+ * Check for roles with known malicious names.
+ */
 
 /**
- * https://gist.github.com/joshkoenig/a941d1fd58c3383b7eb7
- * Check for bad roles!
+ * Check for bad roles.
+ * @link https://gist.github.com/joshkoenig/a941d1fd58c3383b7eb7
  */
 function bad_roles_check() {
   $res = array();
@@ -19,6 +23,12 @@ function bad_roles_check() {
   }
 }
 
+/**
+ * Gather data for bad roles check.
+ *
+ * @return array
+ *   Role names keyed by role id.
+ */
 function bad_roles_check_query() {
   $roles = array(
     'megauser',

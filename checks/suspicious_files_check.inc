@@ -1,10 +1,12 @@
 <?php
+/**
+ * @file
+ * Check for potentially malicious files.
+ */
 
 /**
- * A check for bad files.
- * https://www.drupal.org/node/2360269
- *
- * WTF people. Why can your webserver even write to your codebase?
+ * A check for potentially malicious files placed by the web server.
+ * @link https://www.drupal.org/node/2360269
  */
 function suspicious_files_check() {
   $result = suspicious_files_check_query();
@@ -21,9 +23,14 @@ function suspicious_files_check() {
   }
 }
 
+/**
+ * Gather data for bad roles check.
+ *
+ * @return array
+ *   Role names keyed by role id.
+ */
 function suspicious_files_check_query() {
   $found_files = file_scan_directory('.', '#.*\.php#', array('callback' => '_suspicious_files_callback_sites'));
-  // glob(DRUPAL_ROOT . '/*/*/*.php');
   foreach ($found_files as $found_file) {
     if (!preg_match('#/(sites|profiles)/#', $found_file->uri)) {
       $files[] = realpath(DRUPAL_ROOT . DIRECTORY_SEPARATOR . $found_file->uri);
@@ -51,12 +58,16 @@ function suspicious_files_check_query() {
 function _suspicious_files_whitelist() {
   $tree_list_url = 'https://github.com/drupal/drupal/tree-list/4786cb98b9db1b0727a441c4aa7b6d47670f1afe';
 
+  // Filename => array of valid sha1 hashes.
   $extra_whitelist = array(
-    // filename => array of valid sha1 hashes.
-    'modules/help/help.api.php' => array( // A file removed with Drupal 7.29
-      '6fab6bbb415ff429cfd5575820907a3fbb7d01ad', // 7.12
-      '187eff591132ab334159402a273d7d174823b197', // 7.2
-      'a73b016eff898e85ecd67663f2e735d9580e4cf8', // 7.0
+    // A file removed from Drupal 7.29.
+    'modules/help/help.api.php' => array(
+      // 7.12.
+      '6fab6bbb415ff429cfd5575820907a3fbb7d01ad',
+      // 7.2.
+      '187eff591132ab334159402a273d7d174823b197',
+      // 7.0.
+      'a73b016eff898e85ecd67663f2e735d9580e4cf8',
     ),
   );
   if ($response = drupal_http_request($tree_list_url)) {
