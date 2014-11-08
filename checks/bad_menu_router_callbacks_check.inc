@@ -179,15 +179,44 @@ function bad_menu_router_callbacks_check() {
     'show_source',
     'php_strip_whitespace',
     'get_meta_tags',
+    'ctools_access_menu',
   );
+
+  $res = array();
+
+  $sql = <<<sql
+SELECT mr.path,
+       mr.access_arguments,
+       mr.page_arguments,
+       mr.theme_arguments,
+       mr.title_arguments
+FROM {menu_router} mr
+WHERE mr.access_callback = :cb
+   OR mr.delivery_callback = :cb
+   OR mr.page_callback = :cb
+   OR mr.theme_callback = :cb
+   OR mr.title_callback = :cb
+sql;
+
   foreach ($bad_callbacks as $bad_callback) {
-    if ($result = db_query('SELECT mr.path FROM {menu_router} mr WHERE mr.access_callback = :cb OR mr.delivery_callback = :cb OR mr.page_callback = :cb OR mr.theme_callback = :cb', array(':cb' => $bad_callback))) {
-      if ($user = $result->fetchObject()) {
-        $res[] = t('Menu router @name discovered.', array('@name' => $bad_callback));
+    $result = db_query($sql, array(':cb' => $bad_callback));
+    while ($router = $result->fetchAssoc()) {
+      $t_args = array('@name' => $bad_callback, '@path' => $router['path']);
+      // If this is for ctools_access_menu, confirm it is injecting PHP
+      // Otherwise, just report the dangerous menu callback
+      if ($bad_callback === 'ctools_access_menu') {
+        // Scan each column for PHP
+        foreach ($router as $key => $value) {
+          if (stripos($value, 'php') !== TRUE) {
+            $res[] = t('Menu router @name discovered at @path using PHP.', $t_args);
+          }
+        }
+      }
+      else {
+        $res[] = t('Menu router @name discovered at @path.', $t_args);
       }
     }
   }
-  if (!empty($res)) {
-    return $res;
-  }
+
+  return $res;
 }
