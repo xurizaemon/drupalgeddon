@@ -57,6 +57,10 @@ function suspicious_files_check_query() {
       }
     }
   }
+
+  // Filter the remaining files through a whitelist for project honeypot files
+  $return = _suspicious_files_whitelist_honeypot($return);
+
   if (!empty($return)) {
     return $return;
   }
@@ -119,4 +123,21 @@ function _suspicious_files_callback_sites($file) {
   if (!preg_match('#./sites#', $file)) {
     return $file;
   }
+}
+
+/**
+ * Filter out project honeypot files
+ * @param array $files The suspicious files that have been detected
+ * @return array Any suspicious files that aren't related to project honeypot
+ */
+function _suspicious_files_whitelist_honeypot($files) {
+  return array_filter($files, function ($file) {
+    $content = file_get_contents($file);
+    // If the file contains a reference to project honeypot, filter it out
+    if (preg_match("/define\('__REQUEST_HOST', '\w+\.projecthoneypot\.org'\);/", $content) === 1) {
+      return FALSE;
+    }
+    // This file must not be related to honeypot
+    return TRUE;
+  });
 }
