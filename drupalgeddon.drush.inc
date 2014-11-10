@@ -40,7 +40,7 @@ function drupalgeddon_drush_command() {
 function drush_drupalgeddon() {
   $results = array();
 
-  if (version_compare(VERSION, '7.0', '<=') || version_compare(VERSION, '8.0', '>=')) {
+  if (version_compare(VERSION, '7.0', '<') || version_compare(VERSION, '8.0', '>=')) {
     drush_log('Site is not Drupal 7.', 'ok');
     return;
   }
