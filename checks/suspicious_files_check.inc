@@ -78,7 +78,7 @@ function _suspicious_files_whitelist() {
 
       foreach ($extra_whitelist as $path => $sha1sums) {
         $full_path = realpath(DRUPAL_ROOT . '/' . $path);
-        if (in_array(sha1_file($full_path), $sha1sums)) {
+        if (file_exists($full_path) && in_array(sha1_file($full_path), $sha1sums)) {
           $paths[] = $full_path;
         }
       }
