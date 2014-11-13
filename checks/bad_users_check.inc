@@ -51,6 +51,13 @@ function bad_users_check_query() {
     'system',
     'test1',
     'tst123',
+    'Kkk1123',
+    'wc846',
+    'drupalsys',
+    'us1_admin',
+    'us2_admin',
+    'snyder_rachel_810',
+    'rice_hannah_788',
   );
   $result = db_query('SELECT uid, name FROM {users} WHERE name IN (:users)', array(
     ':users' => $users,
