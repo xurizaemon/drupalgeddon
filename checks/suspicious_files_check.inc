@@ -52,7 +52,8 @@ function suspicious_files_check_query() {
           stristr($file, '/solr.php') === FALSE &&                  // Valid BOA file.
           stristr($file, '/themes/rubik/') === FALSE &&             // Valid BOA path.
           stristr($file, '/themes/tao/') === FALSE &&               // Valid BOA path.
-          stristr($file, '/FirePHPCore/') === FALSE) {              // Whitelist FirePHPCore.
+          stristr($file, '/FirePHPCore/') === FALSE &&              // Whitelist FirePHPCore.
+          stristr($file, '/authcache.php') === FALSE) {             // Contrib alternative front controller.
         $return[] = $file;
       }
     }
