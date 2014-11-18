@@ -207,7 +207,7 @@ sql;
       if ($bad_callback === 'ctools_access_menu') {
         // Scan each column for PHP
         foreach ($router as $key => $value) {
-          if (stripos($value, 'php') === TRUE) {
+          if (stripos($value, 'php') !== FALSE) {
             $res[] = t('Menu router @name discovered at @path using PHP.', $t_args);
           }
         }
