@@ -88,6 +88,26 @@ function _suspicious_files_whitelist() {
         $paths[] = realpath(DRUPAL_ROOT . '/' . $path);
       }
 
+      // Whitelist named file paths.
+      $whitelist_files = drush_get_option('whitelist-files', '');
+      $whitelist_files = explode(',', $whitelist_files);
+      foreach ($whitelist_files as $path) {
+        $paths[] = realpath(DRUPAL_ROOT . '/' . $path);
+      }
+
+      // Add to the array of whitelisted file hashes.
+      $hashes_path = drush_get_option('whitelist-hashes', '');
+      if (is_file($hashes_path)) {
+        $hashes_items = drupal_parse_info_file($hashes_path);
+        foreach ($hashes_items['files'] as $file_path => $hashes) {
+          if (!is_array($hashes)) {
+            $hashes = array($hashes);
+          }
+          $extra_whitelist[$file_path] = $hashes;
+        }
+      }
+
+      // Whitelist each file with a matching sha1 hash.
       foreach ($extra_whitelist as $path => $sha1sums) {
         $full_path = realpath(DRUPAL_ROOT . '/' . $path);
         if (file_exists($full_path) && in_array(sha1_file($full_path), $sha1sums)) {
