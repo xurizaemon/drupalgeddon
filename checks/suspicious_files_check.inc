@@ -60,7 +60,7 @@ function suspicious_files_check_query() {
   }
 
   // Filter the remaining files through a whitelist for project honeypot files
-  $return = _suspicious_files_whitelist_honeypot($return);
+  $return = array_filter($return, _filter_project_honeypot);
 
   if (!empty($return)) {
     return $return;
@@ -83,7 +83,8 @@ function _suspicious_files_whitelist() {
   // Otherwise, use the latest known version
   if (isset($tree_list_hash[VERSION]) === TRUE) {
     $tree_list_url .= $tree_list_hash[VERSION];
-  } else {
+  }
+  else {
     $tree_list_url .= array_pop($tree_list_hash);
   }
 
@@ -127,18 +128,16 @@ function _suspicious_files_callback_sites($file) {
 }
 
 /**
- * Filter out project honeypot files
- * @param array $files The suspicious files that have been detected
- * @return array Any suspicious files that aren't related to project honeypot
+ * Project Honeypot Array Filter
+ * @param string $file The filename to check for project honeypot references
+ * @return bool Is this file not a project honeypot file
  */
-function _suspicious_files_whitelist_honeypot($files) {
-  return array_filter($files, function ($file) {
-    $content = file_get_contents($file);
-    // If the file contains a reference to project honeypot, filter it out
-    if (preg_match("/define\('__REQUEST_HOST', '\w+\.projecthoneypot\.org'\);/", $content) === 1) {
-      return FALSE;
-    }
-    // This file must not be related to honeypot
-    return TRUE;
-  });
+function _filter_project_honeypot($file) {
+  $content = file_get_contents($file);
+  // If the file contains a reference to project honeypot, filter it out
+  if (preg_match("/define\('__REQUEST_HOST', '\w+\.projecthoneypot\.org'\);/", $content) === 1) {
+    return FALSE;
+  }
+  // This file must not be related to honeypot
+  return TRUE;
 }
