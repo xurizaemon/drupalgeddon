@@ -138,6 +138,85 @@ class SiteAuditCheckSecurityDrupalgeddonRoles extends SiteAuditCheckAbstract {
   }
 }
 
+class SiteAuditCheckSecurityDrupalgeddonUserConcurrency extends SiteAuditCheckAbstract {
+  /**
+   * Implements \SiteAudit\Check\Abstract\getLabel().
+   */
+  public function getLabel() {
+    return dt('Drupalgeddon users concurrency');
+  }
+
+  /**
+   * Implements \SiteAudit\Check\Abstract\getDescription().
+   */
+  public function getDescription() {
+    return dt('Check users with odd uid or created dates in the user table.');
+  }
+
+  /**
+   * Implements \SiteAudit\Check\Abstract\getResultFail().
+   */
+  public function getResultFail() {}
+
+  /**
+   * Implements \SiteAudit\Check\Abstract\getResultInfo().
+   */
+  public function getResultInfo() {}
+
+  /**
+   * Implements \SiteAudit\Check\Abstract\getResultPass().
+   */
+  public function getResultPass() {
+    return dt('No suspicious users were detected.');
+  }
+
+  /**
+   * Implements \SiteAudit\Check\Abstract\getResultWarn().
+   */
+  public function getResultWarn() {
+    $ret_val = dt('The following suspicious users have been detected:');
+    if (drush_get_option('html')) {
+      $ret_val = '<p>' . $ret_val . '</p>';
+      $ret_val .= '<ol>';
+      foreach ($this->registry['drupalgeddon_user_concurrency'] as $entry) {
+        $ret_val .= '<li>' . check_plain($entry) . '</li>';
+      }
+      $ret_val .= '</ol>';
+    }
+    else {
+      foreach ($this->registry['drupalgeddon_user_concurrency'] as $entry) {
+        if (!drush_get_option('json')) {
+          $ret_val .= PHP_EOL . str_repeat(' ', 6);
+        }
+        $ret_val .= '- ' . check_plain($entry);
+      }
+    }
+
+    return $ret_val;
+  }
+
+  /**
+   * Implements \SiteAudit\Check\Abstract\getAction().
+   */
+  public function getAction() {
+    if ($this->score == SiteAuditCheckAbstract::AUDIT_CHECK_SCORE_WARN) {
+      return dt('Examine the suspicious users from your site and check for other malicious activity.');
+    }
+  }
+
+  /**
+   * Implements \SiteAudit\Check\Abstract\calculateScore().
+   */
+  public function calculateScore() {
+    require_once DRUPALGEDDON_BASE_PATH . '/checks/bad_users_check.inc';
+    $this->registry['drupalgeddon_user_concurrency'] = bad_users_check_order();
+    if (count($this->registry['drupalgeddon_user_concurrency']) > 0) {
+      return SiteAuditCheckAbstract::AUDIT_CHECK_SCORE_WARN;
+    }
+    return SiteAuditCheckAbstract::AUDIT_CHECK_SCORE_PASS;
+  }
+}
+
 class SiteAuditCheckSecurityDrupalgeddonSuspiciousFiles extends SiteAuditCheckAbstract {
   /**
    * Implements \SiteAudit\Check\Abstract\getLabel().

@@ -79,6 +79,7 @@ function drupalgeddon_drush_command_alter(&$command) {
     $security_review_checks = array(
       'DrupalgeddonUsers',
       'DrupalgeddonRoles',
+      'DrupalgeddonUserConcurrency',
       'DrupalgeddonSuspiciousFiles',
     );
     foreach ($security_review_checks as $name) {
