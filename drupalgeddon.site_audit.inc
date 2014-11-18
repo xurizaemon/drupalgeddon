@@ -63,7 +63,7 @@ class SiteAuditCheckSecurityDrupalgeddonUsers extends SiteAuditCheckAbstract {
    */
   public function calculateScore() {
     require_once DRUPALGEDDON_BASE_PATH . '/checks/bad_users_check.inc';
-    $this->registry['drupalgeddon_users'] = bad_users_check_query();
+    $this->registry['drupalgeddon_users'] = bad_users_check_for_names();
     if (count($this->registry['drupalgeddon_users']) > 0) {
       return SiteAuditCheckAbstract::AUDIT_CHECK_SCORE_FAIL;
     }
