@@ -30,6 +30,8 @@ function suspicious_files_check() {
  *   Role names keyed by role id.
  */
 function suspicious_files_check_query() {
+  $return = array();
+
   $found_files = file_scan_directory('.', '#.*\.php#', array('callback' => '_suspicious_files_callback_sites'));
   foreach ($found_files as $found_file) {
     if (!preg_match('#/(sites|profiles)/#', $found_file->uri)) {
