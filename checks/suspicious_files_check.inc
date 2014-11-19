@@ -78,6 +78,7 @@ function _suspicious_files_whitelist() {
   $tree_list_hash = array(
     '7.32' => '4786cb98b9db1b0727a441c4aa7b6d47670f1afe',
     '7.33' => 'a27ea4ac2112bc9c70e5cf989b87b545ef501813',
+    '7.34' => 'f46e2445757354aca51c46fe94e8b66fde943ecc',
   );
   $tree_list_url = 'https://github.com/drupal/drupal/tree-list/';
 
