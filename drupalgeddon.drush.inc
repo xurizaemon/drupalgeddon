@@ -28,6 +28,8 @@ function drupalgeddon_drush_command() {
     'options' => array(
       'whitelist-files' => 'Files to whitelist from the suspicious files check. Separate multiple files with a comma.',
       'whitelist-hashes' => 'Specify a file that contains a list of files and sha1 hashes to whitelist from the suspicious files check. The file format uses .info file syntax: files[foo.php] = 4a6c61176c77dcbea06d1458d7050b1e8db3ce91.',
+      'skip-user-order' => 'Skip bad user order checks where you will have known missing IDs',
+      'skip-user-time' => 'Skip bad user timestamp checks where you will have known created timestamps before uid 1',
     ),
     'examples' => array(
       'drush drugtest' => 'Scan the sites for known indications of Drupalgeddon attacks.',

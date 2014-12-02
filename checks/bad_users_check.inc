@@ -107,24 +107,44 @@ function bad_users_check_order() {
       continue;
     }
 
-    // If we have a previous user, compare the current user's data against it
-    // and ensure everything appears to be sequential.
-
-    // Check the gap in uids between users and warn if it is greater than 50
-    $uid_gap = ((int)$user->uid - (int)$last_user->uid);
-    if ($uid_gap >= 50) {
-      $report[] = 'Warning: User ' . bad_users_get_name($user) . ' has a uid ' .
-        'that is ' . $uid_gap . ' higher than ' . bad_users_get_name($last_user);
+    // Detect the presence of a variable to skip this test. Useful for sites with
+    // large numbers of known deleted users.
+    if ((variable_get('skip_bad_users_check_order', FALSE)) || (drush_get_option('skip-user-order', ''))) {
+      $skip_gap = TRUE;
+    }
+    else {
+      $skip_gap = FALSE;
     }
 
-    // Check whether this timestamp falls after the previous user
-    if ((int)$user->created < (int)$last_user->created) {
-      $report[] = 'User ' . bad_users_get_name($user) . ' has a ' .
-        'created timestamp before ' . bad_users_get_name($last_user);
+    if (!$skip_gap) {
+      // If we have a previous user, compare the current user's data against it
+      // and ensure everything appears to be sequential.
+
+      // Check the gap in uids between users and warn if it is greater than 50
+      $uid_gap = ((int)$user->uid - (int)$last_user->uid);
+      if ($uid_gap >= 50) {
+        $report[] = 'Warning: User ' . bad_users_get_name($user) . ' has a uid ' .
+          'that is ' . $uid_gap . ' higher than ' . bad_users_get_name($last_user);
+      }
     }
 
-    // Set the $last_user to the user we just processed
-    $last_user = $user;
+    if ((variable_get('skip_bad_users_check_time', FALSE)) || (drush_get_option('skip-user-time', ''))) {
+      $skip_time = TRUE;
+    }
+    else {
+      $skip_time = FALSE;
+    }
+
+    if (!$skip_time) {
+      // Check whether this timestamp falls after the previous user
+      if ((int)$user->created < (int)$last_user->created) {
+        $report[] = 'User ' . bad_users_get_name($user) . ' has a ' .
+          'created timestamp before ' . bad_users_get_name($last_user);
+      }
+
+      // Set the $last_user to the user we just processed
+      $last_user = $user;
+    }
   }
 
   return $report;
